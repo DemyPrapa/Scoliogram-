@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scoliogram — Ο φάκελος της σκολίωσης, πάντα μαζί σου</title>
+<meta name="description" content="Το Scoliogram συγκεντρώνει ακτινογραφίες, μετρήσεις Cobb και ιστορικό σκολίωσης σε έναν φάκελο που ανήκει στον ασθενή. Φιλοξενία ΕΕ, συμβατό με GDPR.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" type="image/png" href="__FAVICON__">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B2E4B; --deep:#0F5B6C; --teal:#17808F; --aqua:#1FA3A8;
+  --mist:#D2ECF0; --mist2:#EEF7F9; --paper:#FFFFFF; --alt:#F5FAFB;
+  --line:rgba(11,46,75,.12); --muted:#52697A;
+  --head:"Manrope","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --shadow:0 1px 2px rgba(11,46,75,.05),0 8px 28px rgba(11,46,75,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{background:var(--paper);color:var(--ink);font:400 16.5px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button{font-family:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+.mono{font:600 12px var(--sans);letter-spacing:.11em;text-transform:uppercase}
+.df{position:absolute;left:0;width:100%;pointer-events:none;z-index:0}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.prog{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--aqua)}
+.nav{display:flex;align-items:center;gap:30px;height:68px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font:700 21px var(--head);letter-spacing:-.02em}
+.brand .mk{width:40px;height:40px;display:block;border-radius:10px}
+.nav ul{display:flex;gap:26px;list-style:none;margin-left:auto}
+.nav ul a{text-decoration:none;font-size:14.5px;color:var(--muted);font-weight:500;position:relative;padding:4px 0}
+.nav ul a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--teal);transition:right .25s}
+.nav ul a:hover{color:var(--ink)}
+.nav ul a:hover::after{right:0}
+.lang{font:600 12px var(--sans);border:1px solid var(--line);background:none;color:var(--ink);padding:6px 10px;border-radius:6px;cursor:pointer;letter-spacing:.08em;transition:border-color .2s}
+.lang:hover{border-color:var(--teal)}
+.btn{display:inline-block;text-decoration:none;font-weight:600;font-size:15px;padding:12px 22px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:#fff;transition:background .2s,transform .2s,box-shadow .2s;cursor:pointer}
+.btn:hover{background:var(--deep);border-color:var(--deep);transform:translateY(-1px);box-shadow:0 6px 16px rgba(11,46,75,.16)}
+.btn.ghost{background:none;color:var(--ink)}
+.btn.ghost:hover{background:var(--mist2);border-color:var(--ink);box-shadow:none}
+.btn.sm{padding:8px 16px;font-size:14px}
+
+/* headings */
+h1,h2,h3,h4{font-family:var(--head);letter-spacing:-.025em}
+h2{font-weight:700;font-size:clamp(1.65rem,2.9vw,2.3rem);line-height:1.18;margin-bottom:14px;max-width:21em}
+.subt{color:var(--muted);max-width:40em;margin-bottom:38px}
+
+/* hero */
+.hero{padding:76px 0 92px;position:relative;overflow:hidden;background:#fff}
+.deco{position:absolute;z-index:0;pointer-events:none;will-change:transform}
+.deco.d1{right:-140px;top:-60px;width:700px}
+.deco.d2{left:-160px;bottom:-120px;width:520px;opacity:.7}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.02fr;gap:56px;align-items:center}
+.eyebrow{color:var(--teal);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:30px;height:1.5px;background:var(--teal)}
+h1{font-weight:800;font-size:clamp(2.05rem,4.1vw,3.3rem);line-height:1.1;margin-bottom:24px}
+h1 em{font-style:normal;color:var(--teal)}
+.lede{font-size:18px;color:var(--muted);max-width:33em;margin-bottom:32px}
+.actions{display:flex;gap:14px;flex-wrap:wrap}
+
+/* case file (hero) */
+.case{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.case-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px 24px;background:var(--alt);border-bottom:1px solid var(--line)}
+.case-head .mono{color:var(--teal);display:block;margin-bottom:4px}
+.case-head b{font:700 17px var(--head);letter-spacing:-.015em}
+.case-head small{display:block;color:var(--muted);font-size:13.5px}
+.case-tag{font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:20px;padding:4px 10px;color:var(--muted);white-space:nowrap;background:#fff}
+.track{position:relative;display:flex;padding:24px 14px 8px}
+.track .ln{position:absolute;top:35px;height:2px;background:var(--line);border-radius:2px}
+.track .fill{position:absolute;top:35px;height:2px;background:var(--aqua);border-radius:2px;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.tp{flex:1;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 2px 10px;position:relative;z-index:1;color:var(--muted)}
+.tp i{width:24px;height:24px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;transition:all .25s}
+.tp i::after{content:"";width:8px;height:8px;border-radius:50%;background:transparent;transition:all .25s}
+.tp.done i{border-color:var(--aqua)}
+.tp.done i::after{background:var(--aqua)}
+.tp.on i{border-color:var(--ink);background:var(--ink);transform:scale(1.12);box-shadow:0 0 0 5px rgba(23,128,143,.14)}
+.tp.on i::after{background:#fff}
+.tp:hover i{border-color:var(--teal)}
+.tp b{font:600 12.5px var(--sans);color:var(--ink);margin-top:5px;text-align:center}
+.tp small{font-size:11.5px;text-align:center}
+.tp:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:6px}
+.rows{padding:4px 24px 6px}
+.r{display:grid;grid-template-columns:128px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line);animation:fadeUp .45s both}
+.r:nth-child(2){animation-delay:.04s}.r:nth-child(3){animation-delay:.08s}.r:nth-child(4){animation-delay:.12s}.r:nth-child(5){animation-delay:.16s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.rl{font:600 11.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--teal);padding-top:3px}
+.rd{font-size:15px;line-height:1.5}
+.rd .num{font:800 22px var(--head);letter-spacing:-.02em;margin-right:8px}
+.rd .sub{color:var(--muted);font-size:13.5px}
+.bar{height:4px;border-radius:3px;background:var(--mist2);margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal);border-radius:3px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.fig-cap{padding:12px 24px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:var(--alt)}
+
+/* sections */
+section{padding:100px 0;position:relative}
+section.alt{background:var(--alt)}
+.sec{display:grid;grid-template-columns:200px 1fr;gap:44px}
+.label{color:var(--teal);padding-top:11px;border-top:1.5px solid var(--teal)}
+
+/* problem */
+.cmp{border-top:1px solid var(--ink)}
+.cmp .row{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:20px 0 20px 10px;border-bottom:1px solid var(--line);transition:background .25s}
+.cmp .row:not(.hd):hover{background:var(--alt)}
+.cmp .row.hd{padding:12px 0 12px 10px;color:var(--muted)}
+.cmp .row.hd span:last-child{color:var(--teal)}
+.cmp .row span:first-child{color:var(--muted)}
+.cmp .row:not(.hd) span:last-child{font-weight:500}
+
+/* ecosystem */
+.eco{display:grid;grid-template-columns:1.12fr .88fr;gap:30px;align-items:stretch}
+.eco-box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px;
+  background-image:radial-gradient(rgba(23,128,143,.13) 1px,transparent 1.2px);background-size:22px 22px}
+.eco svg{display:block;width:100%;height:auto}
+.eco text{font-family:var(--sans)}
+.node{cursor:pointer;outline:none}
+.node .c{fill:#fff;stroke:var(--line);stroke-width:1.5;transition:fill .3s,stroke .3s}
+.node .ring{fill:none;stroke:var(--aqua);stroke-width:1.5;stroke-dasharray:3 6;opacity:0;transition:opacity .3s}
+.node .gl{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+.node .nl{font:700 15px var(--head);fill:var(--ink);text-anchor:middle;transition:fill .3s}
+.node:hover .c{stroke:var(--teal)}
+.node:focus-visible .c{stroke:var(--teal);stroke-width:3}
+.node.on .c{fill:var(--ink);stroke:var(--ink)}
+.node.on .gl{stroke:#fff}
+.node.on .ring{opacity:1;animation:spin 18s linear infinite;transform-origin:center;transform-box:fill-box}
+@keyframes spin{to{transform:rotate(360deg)}}
+.edge{stroke:rgba(11,46,75,.16);stroke-width:1.5;fill:none;transition:stroke .3s,stroke-width .3s}
+.edge.act{stroke:var(--teal);stroke-width:2.6;stroke-dasharray:7 7;animation:dash 1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-14}}
+.elab{font:500 12.5px var(--sans);fill:var(--teal);opacity:0;transition:opacity .35s;paint-order:stroke;stroke:#fff;stroke-width:5px}
+.elab.act{opacity:1}
+.panel{background:var(--alt);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;display:flex;flex-direction:column}
+.panel .pk{color:var(--teal);margin-bottom:8px;display:block}
+.panel h3{font-weight:700;font-size:1.5rem;line-height:1.2;margin-bottom:10px}
+.panel p.lead{color:var(--muted);margin-bottom:18px;font-size:15.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chips span{font-size:13.5px;font-weight:500;padding:6px 12px;border-radius:20px;background:#fff;border:1px solid var(--line);animation:fadeUp .45s both}
+.conn{border-top:1px solid var(--line);margin-top:auto}
+.conn button{display:grid;grid-template-columns:22px 1fr;gap:10px;text-align:left;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:13px 4px;cursor:pointer;color:var(--ink);font-size:14.5px;line-height:1.45;transition:background .2s,padding .2s}
+.conn button:hover{background:#fff;padding-left:10px}
+.conn button span{color:var(--teal);font-weight:700}
+.conn button b{display:block;font-weight:600}
+.conn button small{color:var(--muted);font-size:13.5px}
+.note{margin-top:14px;font-size:12.5px;color:var(--muted)}
+
+/* x-ray analysis */
+.xr{display:grid;grid-template-columns:minmax(0,420px) 1fr;gap:56px;align-items:start}
+.xr-img{position:relative;border-radius:12px;overflow:hidden;background:#08171f;aspect-ratio:400/520;cursor:ew-resize;touch-action:pan-y;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none}
+.xr-img svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.xr-ov{position:absolute;inset:0;clip-path:inset(0 0 0 var(--x,50%))}
+.xr-h{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;margin-left:-1px;background:#fff;pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.xr-h i{position:absolute;top:50%;left:50%;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.35);display:grid;place-items:center;color:var(--ink);font:700 13px var(--sans);font-style:normal}
+.xr-tag{position:absolute;top:12px;font:600 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:4px;background:rgba(255,255,255,.88);color:var(--ink);pointer-events:none}
+.xr-tag.l{left:12px}.xr-tag.r{right:12px;background:var(--aqua);color:#fff}
+.xr-syn{position:absolute;left:12px;bottom:12px;font:500 11px var(--sans);color:rgba(255,255,255,.75);pointer-events:none}
+.xr input[type=range]{width:100%;accent-color:var(--teal);margin-top:14px;cursor:pointer}
+.xr-sl{display:flex;justify-content:space-between;font:600 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.L1,.L2,.L3{opacity:0;transition:opacity .55s}
+[data-s="1"] .L1,[data-s="2"] .L1,[data-s="3"] .L1,[data-s="2"] .L2,[data-s="3"] .L2,[data-s="3"] .L3{opacity:1}
+.stg{border-top:1px solid var(--ink);margin-bottom:22px}
+.stg button{display:grid;grid-template-columns:44px 1fr;gap:6px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:16px 8px;cursor:pointer;color:var(--muted);transition:background .2s,color .2s}
+.stg button:hover{background:var(--alt)}
+.stg button .n{font:700 13px var(--sans);color:var(--aqua);padding-top:2px}
+.stg button b{display:block;font:700 16.5px var(--head);letter-spacing:-.01em;color:var(--ink)}
+.stg button small{font-size:14px}
+.stg button.on{background:var(--mist2);color:var(--ink);box-shadow:inset 3px 0 0 var(--teal)}
+.read{display:flex;align-items:baseline;gap:14px;padding:16px 18px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:14px}
+.read b{font:800 34px var(--head);letter-spacing:-.03em}
+.read span{font-size:13.5px;color:var(--muted)}
+.warn{font-size:13px;color:var(--muted);padding-left:14px;border-left:2px solid var(--teal)}
+
+/* chart */
+.chart-box{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:22px 22px 16px}
+.ctl{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin-bottom:12px}
+.ctl label{display:flex;align-items:center;gap:8px;font:600 12px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.ctl select{font:500 14px var(--sans);color:var(--ink);padding:8px 30px 8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%230B2E4B' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 11px center;appearance:none;-webkit-appearance:none;cursor:pointer;text-transform:none;letter-spacing:0}
+.ctl select:hover{border-color:var(--teal)}
+.lgd{margin-left:auto;display:flex;gap:18px;font-size:13px;color:var(--muted)}
+.lgd span{display:flex;align-items:center;gap:7px}
+.lgd i{width:18px;height:3px;border-radius:2px;display:block}
+.chart-box svg{display:block;width:100%;height:auto}
+.chart-box text{font-family:var(--sans)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:8px}
+.stats div{padding:16px 6px 4px}
+.stats small{display:block;font:600 11.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.stats b{font:800 24px var(--head);letter-spacing:-.02em}
+.stats .teal{color:var(--teal)}
+.cap2{font-size:13px;color:var(--muted);margin-top:12px}
+
+/* features */
+.idx{border-top:1px solid var(--ink);display:grid;grid-template-columns:1fr 1fr;column-gap:48px}
+.idx .item{display:grid;grid-template-columns:34px 1fr;gap:6px 12px;padding:22px 0;border-bottom:1px solid var(--line)}
+.idx .n{font:700 12.5px var(--sans);color:var(--aqua);padding-top:4px}
+.idx h4{font-weight:700;font-size:1.1rem;line-height:1.3}
+.idx p{grid-column:2;color:var(--muted);font-size:15px}
+
+/* security */
+.dark{background:var(--deep);color:var(--mist);padding:0 0 100px;position:relative;overflow:hidden}
+.blob{display:block;width:100%;height:90px;margin-bottom:14px;fill:#fff;margin-top:-1px;position:relative;z-index:1}
+.dark .label{color:#8FD3D6;border-color:#8FD3D6}
+.dark h2{color:#fff}
+.dark .subt{color:#B9DEE3}
+.spec{border-top:1px solid rgba(210,236,240,.5)}
+.spec div{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:17px 0;border-bottom:1px solid rgba(210,236,240,.2)}
+.spec dt{font:600 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:#8FD3D6;padding-top:4px}
+.spec dd{color:#fff}
+
+/* story */
+.story .cols{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.story .txt p{color:var(--muted);margin-bottom:18px;max-width:35em}
+.story .txt p:first-of-type{font:600 1.28rem/1.5 var(--head);letter-spacing:-.015em;color:var(--ink)}
+.team{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.team figure:nth-child(2){margin-top:44px}
+.team img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:50%;box-shadow:0 0 0 6px #fff,0 0 0 7px var(--line),0 10px 26px rgba(11,46,75,.14);transition:transform .4s}
+.team figure:hover img{transform:scale(1.03)}
+.team figcaption{margin-top:20px;text-align:center}
+.team figcaption b{display:block;font:700 1.02rem/1.3 var(--head);letter-spacing:-.01em}
+.team figcaption span{font-size:13.5px;color:var(--teal)}
+
+/* start */
+.start .grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.start .col{padding:28px 28px 8px 0;margin-right:28px;border-right:1px solid var(--line)}
+.start .col:last-child{border:0;margin:0}
+.start h4{font-weight:700;font-size:1.25rem;margin-bottom:8px}
+.start p{color:var(--muted);margin-bottom:22px;font-size:15.5px}
+.stores{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+
+footer{padding:56px 0 40px;border-top:1px solid var(--line)}
+footer .top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;margin-bottom:34px}
+footer .links{display:flex;gap:26px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+footer .links a{text-decoration:none}
+footer .links a:hover{color:var(--ink)}
+footer small{display:block;color:var(--muted);font-size:13.5px;max-width:46em}
+
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr;gap:44px}
+  .eco{grid-template-columns:1fr}
+  .xr{grid-template-columns:1fr;gap:36px}
+  .xr-img{max-width:420px}
+}
+@media (max-width:900px){
+  .sec{grid-template-columns:1fr;gap:20px}
+  .idx{grid-template-columns:1fr}
+  .story .cols{grid-template-columns:1fr}
+  .team{max-width:380px}
+  .start .grid{grid-template-columns:1fr}
+  .start .col{border-right:0;margin:0;padding:26px 0;border-bottom:1px solid var(--line)}
+  .nav ul{display:none}
+  .nav{gap:12px}.nav .lang{margin-left:auto}
+  .cmp .row{grid-template-columns:1fr;gap:6px}
+  .cmp .row.hd{display:none}
+  .spec div{grid-template-columns:1fr;gap:4px}
+  section{padding:72px 0}
+  .deco.d1{width:480px;right:-160px}
+  .elab{display:none}
+  .node .nl{font-size:21px}
+  .lgd{margin-left:0;width:100%}
+  .stats b{font-size:20px}
+}
+@media (max-width:520px){
+  .r{grid-template-columns:1fr;gap:4px}
+  .case-head{flex-direction:column}
+  .tp small{display:none}
+  .panel{padding:24px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none;transition:none}
+  .edge.act,.node.on .ring{animation:none}
+  .r,.chips span{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Scoliogram"><img class="mk" src="__MARK__" alt="">scoliogram</a>
+    <ul>
+      <li><a href="#problem" data-t="n_problem"></a></li>
+      <li><a href="#roles" data-t="n_roles"></a></li>
+      <li><a href="#analysis" data-t="n_analysis"></a></li>
+      <li><a href="#security" data-t="n_sec"></a></li>
+      <li><a href="#story" data-t="n_story"></a></li>
+    </ul>
+    <button class="lang" id="lang" type="button" aria-label="Language">EN</button>
+    <a class="btn sm" href="#start" data-t="n_cta"></a>
+  </div>
+  <div class="prog" id="prog"></div>
+</header>
+
+<main id="top">
+<div class="hero" data-field="light">
+  <svg class="deco d1" data-par=".07" viewBox="0 0 600 420" aria-hidden="true"><path d="M0 420C0 270 120 130 260 130C360 130 420 50 520 50L600 50V420Z" fill="#EEF7F9"/></svg>
+  <svg class="deco d2" data-par="-.05" viewBox="0 0 600 420" aria-hidden="true"><path d="M0 0H600V240C520 240 470 330 340 330C220 330 160 250 0 270Z" fill="#EEF7F9"/></svg>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow mono" data-t="h_eyebrow"></p>
+      <h1 data-t="h_title"></h1>
+      <p class="lede" data-t="h_sub"></p>
+      <div class="actions">
+        <a class="btn" href="#start" data-t="h_b1"></a>
+        <a class="btn ghost" href="#roles" data-t="h_b2"></a>
+      </div>
+    </div>
+
+    <div class="case">
+      <div class="case-head">
+        <div><span class="mono" data-t="case_k"></span><b data-t="case_p"></b><small data-t="case_s"></small></div>
+        <span class="case-tag" data-t="case_tag"></span>
+      </div>
+      <div class="track" id="track" role="tablist"><div class="ln" id="tln"></div><div class="fill" id="tfill"></div><div id="tbtns" style="display:contents"></div></div>
+      <div class="rows" id="rows" aria-live="polite"></div>
+      <p class="fig-cap" data-t="case_cap"></p>
+    </div>
+  </div>
+</div>
+
+<section id="problem">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="p_label"></p></div>
+    <div>
+      <h2 data-t="p_title"></h2>
+      <div class="cmp" id="cmp"></div>
+    </div>
+  </div>
+</section>
+
+<section id="roles" class="alt">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="r_label"></p></div>
+    <div>
+      <h2 data-t="r_title"></h2>
+      <p class="subt" data-t="r_sub"></p>
+      <div class="eco">
+        <div class="eco-box">
+          <svg viewBox="0 0 640 470" role="group" aria-label="Scoliogram ecosystem" id="ecoSvg">
+            <path class="edge" id="e_patient_pro" d="M214 170H426"/>
+            <path class="edge" id="e_pro_data" d="M452 208L338 352"/>
+            <path class="edge" id="e_data_patient" d="M302 352L188 208"/>
+            <text class="elab" id="l_patient_pro" x="320" y="154" text-anchor="middle"></text>
+            <text class="elab" id="l_pro_data" x="412" y="296" text-anchor="start"></text>
+            <text class="elab" id="l_data_patient" x="228" y="296" text-anchor="end"></text>
+
+            <g class="node" id="n_patient" tabindex="0" role="button" transform="translate(170 170)">
+              <circle class="ring" r="58"/><circle class="c" r="44"/>
+              <g class="gl"><circle cx="0" cy="-9" r="8"/><path d="M-15 17a15 15 0 0 1 30 0"/></g>
+              <text class="nl" y="76"></text>
+            </g>
+            <g class="node" id="n_pro" tabindex="0" role="button" transform="translate(470 170)">
+              <circle class="ring" r="58"/><circle class="c" r="44"/>
+              <g class="gl"><path d="M-5 -17h10v12h12v10h-12v12h-10v-12h-12v-10h12z"/></g>
+              <text class="nl" y="76"></text>
+            </g>
+            <g class="node" id="n_data" tabindex="0" role="button" transform="translate(320 390)">
+              <circle class="ring" r="58"/><circle class="c" r="44"/>
+              <g class="gl"><path d="M-17 -12h26M-17 -1h34M-17 10h20"/><circle cx="12" cy="10" r="3.5"/></g>
+              <text class="nl" y="76"></text>
+            </g>
+          </svg>
+        </div>
+        <div class="panel" id="ecoPanel" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="analysis">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="a_label"></p></div>
+    <div>
+      <h2 data-t="a_title"></h2>
+      <p class="subt" data-t="a_sub"></p>
+      <div class="xr" id="xr" data-s="3">
+        <div>
+          <div class="xr-img" id="xrImg" style="--x:50%">
+            <svg id="xrBase" viewBox="0 0 400 520" aria-hidden="true"></svg>
+            <div class="xr-ov"><svg id="xrAi" viewBox="0 0 400 520" aria-hidden="true"></svg></div>
+            <div class="xr-h"><i>⇆</i></div>
+            <span class="xr-tag l" data-t="a_orig"></span><span class="xr-tag r" data-t="a_ai"></span>
+            <span class="xr-syn" data-t="a_syn"></span>
+          </div>
+          <input type="range" id="xrRange" min="0" max="100" value="50" aria-label="Original / AI">
+          <div class="xr-sl"><span data-t="a_orig"></span><span data-t="a_ai"></span></div>
+        </div>
+        <div>
+          <div class="stg" id="stg"></div>
+          <div class="read"><b id="cobbVal">—</b><span data-t="a_est"></span></div>
+          <p class="warn" data-t="a_warn"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="progress" class="alt">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="c_label"></p></div>
+    <div>
+      <h2 data-t="c_title"></h2>
+      <p class="subt" data-t="c_sub"></p>
+      <div class="chart-box">
+        <div class="ctl">
+          <label><span data-t="c_from"></span><select id="cFrom"></select></label>
+          <label><span data-t="c_to"></span><select id="cTo"></select></label>
+          <div class="lgd"><span><i style="background:var(--ink)"></i><em style="font-style:normal" data-t="c_l1"></em></span><span><i style="background:var(--aqua)"></i><em style="font-style:normal" data-t="c_l2"></em></span></div>
+        </div>
+        <svg id="chart" viewBox="0 0 720 330" role="img"></svg>
+        <div class="stats" id="stats"></div>
+      </div>
+      <p class="cap2" data-t="c_cap"></p>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="f_label"></p></div>
+    <div>
+      <h2 data-t="f_title"></h2>
+      <div class="idx" id="idx" style="margin-top:34px"></div>
+    </div>
+  </div>
+</section>
+
+<div class="dark" id="security" data-field="dark" data-offset="90">
+  <svg class="blob" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V30C1090 30 1040 78 900 78C760 78 720 20 560 20C380 20 330 70 190 70C100 70 50 50 0 60Z"/></svg>
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="s_label"></p></div>
+    <div>
+      <h2 data-t="s_title"></h2>
+      <p class="subt" data-t="s_sub"></p>
+      <dl class="spec" id="spec"></dl>
+    </div>
+  </div>
+</div>
+
+<section id="story" class="story">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="st_label"></p></div>
+    <div>
+      <h2 data-t="st_title"></h2>
+      <div class="cols" style="margin-top:34px">
+        <div class="txt">
+          <p data-t="st_p1"></p>
+          <p data-t="st_p2"></p>
+          <p data-t="st_p3"></p>
+        </div>
+        <div class="team">
+          <figure data-par=".03"><img src="__KAT__" alt="" id="img1"><figcaption><b data-t="n_kat"></b><span data-t="cofounder"></span></figcaption></figure>
+          <figure data-par="-.03"><img src="__DIM__" alt="" id="img2"><figcaption><b data-t="n_dim"></b><span data-t="cofounder"></span></figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="start" class="start alt">
+  <div class="wrap sec">
+    <div><p class="label mono" data-t="g_label"></p></div>
+    <div>
+      <h2 data-t="g_title" style="margin-bottom:34px"></h2>
+      <div class="grid">
+        <div class="col">
+          <h4 data-t="g_pat"></h4><p data-t="g_pat_d"></p>
+          <div class="stores">
+            <a class="btn sm" href="#" data-t="g_play"></a>
+            <a class="btn sm ghost" href="#" data-t="g_apple"></a>
+          </div>
+        </div>
+        <div class="col">
+          <h4 data-t="g_doc"></h4><p data-t="g_doc_d"></p>
+          <a class="btn sm" href="#" data-t="g_doc_b"></a>
+        </div>
+        <div class="col">
+          <h4 data-t="g_lab"></h4><p data-t="g_lab_d"></p>
+          <a class="btn sm" href="#" data-t="g_lab_b"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <a class="brand" href="#top"><img class="mk" src="__MARK__" alt="">scoliogram</a>
+        <p style="color:var(--muted);margin-top:10px;font-size:15px"><a href="mailto:scoliogram@gmail.com" style="text-decoration:none">scoliogram@gmail.com</a> · Athens, GR</p>
+      </div>
+      <div class="links">
+        <a href="#" data-t="ft_priv"></a>
+        <a href="#" data-t="ft_terms"></a>
+        <a href="#" data-t="ft_gdpr"></a>
+      </div>
+    </div>
+    <small data-t="ft_disc"></small>
+    <small style="margin-top:8px">© <span id="yr"></span> Scoliogram</small>
+  </div>
+</footer>
+
+<script>
+const D = {
+el:{
+ title:"Scoliogram — Ο φάκελος της σκολίωσης, πάντα μαζί σου",
+ n_problem:"Το πρόβλημα", n_roles:"Για ποιους", n_analysis:"Ανάλυση", n_sec:"Ασφάλεια", n_story:"Η ιστορία μας", n_cta:"Ξεκίνα",
+ h_eyebrow:"Ψηφιακός φάκελος σκολίωσης · Φιλοξενία ΕΕ · GDPR",
+ h_title:"Η σκολίωση παρακολουθείται για χρόνια. Ο φάκελός σου πρέπει να την <em>ακολουθεί</em>.",
+ h_sub:"Το Scoliogram συγκεντρώνει ακτινογραφίες, μετρήσεις Cobb και ιστορικό σε έναν ενιαίο φάκελο που ανήκει στον ασθενή και μοιράζεται με τους γιατρούς του. Από το κινητό, χωρίς CD και χαρτιά.",
+ h_b1:"Ξεκίνα", h_b2:"Πώς λειτουργεί",
+ case_k:"Πορεία παρακολούθησης", case_p:"Ασθενής Α., 12 ετών", case_s:"Ιδιοπαθής σκολίωση · 2 χρόνια παρακολούθησης", case_tag:"Ενδεικτικό",
+ case_cap:"Υποθετικός ασθενής και δεδομένα, για να δειχθεί η λογική του Scoliogram. Δεν απεικονίζει την τελική εμφάνιση της εφαρμογής.",
+ month:"Μήνας",
+ rowL:["Ακτινογραφίες","Γωνία Cobb","Σκολιόμετρο","Εξετάσεις & αξιολογήσεις","Επικοινωνία"],
+ site:"θωρακική καμπύλη", atr:"γωνία περιστροφής κορμού (ATR)",
+ visits:[
+  {x:"Αρχική όρθια ακτινογραφία (πρόσθια–οπίσθια) · 1 εικόνα",e:"Πρώτη κλινική αξιολόγηση και καταγραφή ιστορικού",c:"Ο ορθοπαιδικός ζητά επανέλεγχο σε 6 μήνες"},
+  {x:"Ακτινογραφία ελέγχου · σύγκριση με την αρχική",e:"Αξιολόγηση ανάπτυξης και στάσης",c:"Ο γονέας ανεβάζει τις νέες εξετάσεις και ο ιατρός σχολιάζει"},
+  {x:"Ακτινογραφία ελέγχου · πρόσθια–οπίσθια και πλάγια",e:"Αξιολόγηση από ορθοπαιδικό · συζήτηση για κηδεμόνα",c:"Συντονισμός ορθοπαιδικού και τεχνικού ορθοπεδικού"},
+  {x:"Ακτινογραφία με κηδεμόνα · έλεγχος εφαρμογής",e:"Έλεγχος εφαρμογής κηδεμόνα · φυσικοθεραπευτής",c:"Οδηγίες φυσικοθεραπείας μέσω μηνυμάτων"},
+  {x:"Ακτινογραφία ελέγχου · σύγκριση με όλες τις προηγούμενες",e:"Συνολική αξιολόγηση πορείας",c:"Ο ιατρός μοιράζεται το διάγραμμα εξέλιξης με την οικογένεια"}
+ ],
+ p_label:"01 — Το πρόβλημα", p_title:"Τι αλλάζει όταν ο φάκελος ακολουθεί τον ασθενή",
+ p_h1:"Σήμερα", p_h2:"Με Scoliogram",
+ cmp:[
+  ["Ακτινογραφία τώρα, ραντεβού σε μέρες ή εβδομάδες. Στο ενδιάμεσο δεν ξέρεις τίποτα.","Βλέπεις τον φάκελο και την πορεία σου μόλις ανέβει η εξέταση."],
+  ["Φυσικές ακτινογραφίες και CD σε κάθε επίσκεψη, ειδικά όταν αλλάζεις κέντρο.","Όλες οι εξετάσεις σε ένα χρονολόγιο, στο κινητό σου."],
+  ["Η γωνία Cobb μετριέται με μοιρογνωμόνιο και το αποτέλεσμα αλλάζει ανά μέτρηση.","Εκτίμηση με υποστήριξη AI και αποθηκευμένο ιστορικό μετρήσεων, για έλεγχο από τον γιατρό."],
+  ["Ορθοπαιδικός, τεχνικός ορθοπεδικός, φυσικοθεραπευτής: ο καθένας βλέπει ένα κομμάτι.","Ένας φάκελος, με πρόσβαση που ορίζεις εσύ για κάθε επαγγελματία."],
+  ["Πληροφόρηση διάσπαρτη, με άφθονη παραπληροφόρηση.","Κατανοητό εκπαιδευτικό υλικό μέσα στην εφαρμογή."]
+ ],
+ r_label:"02 — Για ποιους", r_title:"Μία πλατφόρμα, τρεις κόμβοι",
+ r_sub:"Το Scoliogram δεν είναι ένα εργαλείο μέτρησης Cobb. Είναι ένα δίκτυο που συνδέει ασθενή, επαγγελματία υγείας και δεδομένα. Διάλεξε έναν κόμβο και δες πώς συνδέεται με τους υπόλοιπους.",
+ nodes:{
+  patient:{n:"Ασθενής",t:"Ασθενής & οικογένεια",lead:"Ο ασθενής κατέχει τον φάκελο και αποφασίζει ποιος τον βλέπει. Οι γονείς και οι κηδεμόνες μπορούν να διαχειρίζονται τον φάκελο του παιδιού.",chips:["Προσωπικό αρχείο","Μετρήσεις","Ιστορικό εξετάσεων","Έλεγχος πρόσβασης","Εκπαιδευτικό υλικό"],
+   links:{pro:"Μοιράζεται τον φάκελο και ανοίγει ασφαλή επικοινωνία με τους γιατρούς του.",data:"Κάθε εξέταση γίνεται μέρος του διαχρονικού ιστορικού του."}},
+  pro:{n:"Επαγγελματίας υγείας",t:"Επαγγελματίας υγείας",lead:"Ορθοπαιδικοί, τεχνικοί ορθοπεδικοί και φυσικοθεραπευτές δουλεύουν πάνω στην ίδια εικόνα του ασθενή, από ένα καθαρό web περιβάλλον.",chips:["Παρακολούθηση ασθενών","Διαχείριση φακέλων","Σχολιασμός μελετών","Ασφαλή μηνύματα","Upload εξετάσεων"],
+   links:{patient:"Βλέπει μόνο όσα του έχει δώσει ο ασθενής και τον ενημερώνει μέσα από την πλατφόρμα.",data:"Ελέγχει και συμπληρώνει τις μετρήσεις και τις εκτιμήσεις AI."}},
+  data:{n:"Ιατρικά δεδομένα & AI",t:"Ιατρικά δεδομένα & AI",lead:"Η βάση της πλατφόρμας: οι εξετάσεις αποθηκεύονται, οργανώνονται και αναλύονται, με υποστήριξη AI και αυστηρή ασφάλεια.",chips:["Αποθήκευση DICOM","Εκτίμηση Cobb με AI","3D απεικόνιση","Διαγράμματα εξέλιξης","Παράδοση από εργαστήρια","Φιλοξενία ΕΕ"],
+   links:{patient:"Τροφοδοτεί το ιστορικό και τα διαγράμματα που βλέπει ο ασθενής.",pro:"Δίνει στον ιατρό οργανωμένα δεδομένα και προτάσεις προς έλεγχο."}}
+ },
+ conn:"Συνδέεται με", edgeL:{patient_pro:"Κοινή πρόσβαση & μηνύματα",pro_data:"Ανάλυση & σχολιασμός",data_patient:"Ιστορικό & μετρήσεις"},
+ r_note:"Οι εκτιμήσεις AI ελέγχονται πάντα από τον επαγγελματία υγείας.",
+ a_label:"03 — Ανάλυση", a_title:"Από την ακτινογραφία στην ανάλυση AI",
+ a_sub:"Σύρε τη γραμμή πάνω στην εικόνα. Αριστερά βλέπεις την αρχική ακτινογραφία και δεξιά την ίδια εικόνα με AI-assisted ανάλυση. Διάλεξε βήμα για να δεις τι προστίθεται.",
+ a_orig:"Αρχική", a_ai:"Ανάλυση AI", a_syn:"Συνθετική εικόνα", a_est:"ενδεικτική εκτίμηση γωνίας Cobb",
+ a_warn:"Συνθετική ακτινογραφία για επίδειξη. Η ανάλυση AI είναι πρόταση προς έλεγχο από τον ιατρό και δεν αποτελεί ιατρική διάγνωση.",
+ stages:[["Αρχική ακτινογραφία","Η εικόνα όπως ανεβαίνει από το εργαστήριο."],["Εντοπισμός σπονδύλων","Αναγνώριση και αρίθμηση κάθε σπονδύλου."],["Γραμμή Cobb","Επιλογή των οριακών σπονδύλων και μέτρηση της γωνίας."],["Οπτικοποίηση καμπύλης","Η πορεία της σπονδυλικής στήλης σε σχέση με τη μέση γραμμή."]],
+ c_label:"04 — Πορεία", c_title:"Η αξία της παρακολούθησης στον χρόνο",
+ c_sub:"Μία μέτρηση δείχνει μια στιγμή. Η σειρά των μετρήσεων δείχνει την τάση. Διάλεξε διάστημα και δες πώς αλλάζει η εικόνα.",
+ c_from:"Από", c_to:"Έως", c_l1:"Γωνία Cobb", c_l2:"Σκολιόμετρο (ATR)",
+ c_cap:"Υποθετικά δεδομένα για επίδειξη. Δεν αφορούν πραγματικό ασθενή.",
+ brace:"Έναρξη κηδεμόνα", tipC:"Cobb", tipA:"ATR",
+ st1:"Cobb στο διάστημα", st2:"Μέγιστο Cobb", st3:"Μεταβολή",
+ f_label:"05 — Τι περιλαμβάνει", f_title:"Τα εργαλεία που χρειάζεται η μακροχρόνια παρακολούθηση",
+ feats:[
+  ["Προβολέας DICOM","Ενσωματωμένος OHIF για αξονικές, μαγνητικές, ακτινογραφίες και υπερήχους."],
+  ["Διαχρονικός φάκελος","Κάθε εξέταση από κάθε ίδρυμα σε ένα χρονολόγιο. Συγκρίνεις στον χρόνο, χωρίς παλιά CD."],
+  ["Εκτίμηση Cobb με AI","Προτεινόμενη γωνία που ο γιατρός ελέγχει. Το ιστορικό μετρήσεων γίνεται διάγραμμα."],
+  ["Scoliometer & 3D","Μετρήσεις scoliometer και τρισδιάστατη απεικόνιση της σπονδυλικής στήλης."],
+  ["Ασφαλής επικοινωνία","Μηνύματα γιατρού και ασθενή μέσα στην πλατφόρμα, δεμένα με συγκεκριμένη μελέτη."],
+  ["Ενότητα Πληροφόρησης","Αξιόπιστο υλικό για τα αίτια, τα συμπτώματα και τις θεραπείες της σκολίωσης."]
+ ],
+ s_label:"06 — Ασφάλεια", s_title:"Ευαίσθητα δεδομένα. Σχεδιασμένα έτσι από την αρχή.",
+ s_sub:"Τα ακτινολογικά δεδομένα ανήκουν στα πιο ευαίσθητα δεδομένα υγείας. Η προστασία γίνεται σε κάθε επίπεδο και όχι μόνο στη διεπαφή.",
+ spec:[
+  ["Φιλοξενία","Αποκλειστικά σε περιοχές ΕΕ (Φρανκφούρτη). Καμία διατλαντική μεταφορά."],
+  ["Κρυπτογράφηση","AES-256 σε ηρεμία και κρυπτογράφηση κατά τη μεταφορά. Τα DICOM αποθηκεύονται σε κρυπτογραφημένο Orthanc."],
+  ["Σύνδεσμοι μελετών","Υπογεγραμμένα URL βραχείας διάρκειας. Ο διαμοιρασμός ενός συνδέσμου δεν δίνει μόνιμη πρόσβαση."],
+  ["Πρόσβαση","Έλεγχος σε επίπεδο γραμμής βάσης (RLS): ο γιατρός βλέπει μόνο όσα του έχουν δοθεί ρητά, ακόμη κι αν ο κώδικας έχει σφάλμα."],
+  ["Ιχνηλασιμότητα","Αμετάβλητο αρχείο ελέγχου για κάθε πρόσβαση, upload, παροχή και ανάκληση."],
+  ["Δικαιώματα","GDPR Άρθρο 17 (διαγραφή) και Άρθρο 20 (φορητότητα) απευθείας από την εφαρμογή."],
+  ["Αρχιτεκτονική","Συμβατότητα HL7 FHIR, ετοιμότητα NIS2 και δυνατότητα self-hosting για οργανισμούς."]
+ ],
+ st_label:"07 — Η ιστορία μας", st_title:"Ξεκίνησε από δύο ασθενείς.",
+ st_p1:"Και οι δύο διαγνωστήκαμε με σκολίωση σε πολύ μικρή ηλικία και περάσαμε από χειρουργείο σπονδυλοδεσίας.",
+ st_p2:"Ξέρουμε τι σημαίνει να κουβαλάς ακτινογραφίες από γιατρό σε γιατρό, να αλλάζεις κέντρο και να χάνεις το ιστορικό, να περνάς ώρες στο τηλέφωνο για να ενώσεις την εικόνα της πορείας σου.",
+ st_p3:"Τον Φεβρουάριο του 2025, στο μάθημα Τηλεϊατρικής του Πανεπιστημίου Θεσσαλίας, κάναμε αυτή την εμπειρία project. Από τότε το Scoliogram εξελίσσεται με τη βοήθεια γιατρών, ασθενών και του πανεπιστημίου μας.",
+ n_kat:"Κατερίνα Πατρινού", n_dim:"Δήμητρα Πράπα", cofounder:"Συνιδρύτρια",
+ g_label:"08 — Ξεκίνα", g_title:"Διάλεξε πώς θα μπεις στο Scoliogram",
+ g_pat:"Ασθενής ή γονέας", g_pat_d:"Εγκατέστησε την εφαρμογή και ξεκίνα τον φάκελό σου. Η βασική έκδοση είναι δωρεάν.",
+ g_play:"Google Play", g_apple:"App Store",
+ g_doc:"Γιατρός", g_doc_d:"Πρόσβαση σε χρονολόγια ασθενών, upload μελετών και μηνύματα.", g_doc_b:"Εγγραφή ως γιατρός",
+ g_lab:"Εργαστήριο", g_lab_d:"Ανέβασε μελέτες DICOM και αναφορές απευθείας στους φακέλους των ασθενών.", g_lab_b:"Εγγραφή ως εργαστήριο",
+ ft_priv:"Πολιτική Απορρήτου", ft_terms:"Όροι Χρήσης", ft_gdpr:"GDPR",
+ ft_disc:"Το Scoliogram υποστηρίζει και δεν υποκαθιστά την ιατρική εξέταση και κρίση. Οι εκτιμήσεις AI αποτελούν πρόταση προς έλεγχο από τον θεράποντα επαγγελματία υγείας."
+},
+en:{
+ title:"Scoliogram — Your scoliosis record, always with you",
+ n_problem:"The problem", n_roles:"Who it's for", n_analysis:"Analysis", n_sec:"Security", n_story:"Our story", n_cta:"Get started",
+ h_eyebrow:"Digital scoliosis record · EU-hosted · GDPR",
+ h_title:"Scoliosis is monitored for years. Your record should <em>follow</em> you.",
+ h_sub:"Scoliogram brings X-rays, Cobb measurements and history into one record that belongs to the patient and is shared with their clinicians. From your phone, with no CDs or paper.",
+ h_b1:"Get started", h_b2:"How it works",
+ case_k:"Monitoring journey", case_p:"Patient A., age 12", case_s:"Idiopathic scoliosis · 2 years of follow-up", case_tag:"Illustrative",
+ case_cap:"Hypothetical patient and data, to show the logic of Scoliogram. It does not depict the final look of the app.",
+ month:"Month",
+ rowL:["X-rays","Cobb angle","Scoliometer","Exams & assessments","Communication"],
+ site:"thoracic curve", atr:"angle of trunk rotation (ATR)",
+ visits:[
+  {x:"Initial standing X-ray (PA) · 1 image",e:"First clinical assessment and history taken",c:"The orthopaedist asks for a follow-up in 6 months"},
+  {x:"Follow-up X-ray · compared with the initial one",e:"Growth and posture assessment",c:"The parent uploads the new exams and the doctor comments"},
+  {x:"Follow-up X-ray · PA and lateral",e:"Orthopaedic assessment · bracing discussed",c:"Orthopaedist and orthotist coordinate"},
+  {x:"X-ray in brace · fit check",e:"Brace fit check · physiotherapist",c:"Physiotherapy instructions via messages"},
+  {x:"Follow-up X-ray · compared with all previous ones",e:"Overall review of the course",c:"The doctor shares the progression chart with the family"}
+ ],
+ p_label:"01 — The problem", p_title:"What changes when the record follows the patient",
+ p_h1:"Today", p_h2:"With Scoliogram",
+ cmp:[
+  ["X-ray now, appointment in days or weeks. In between, you know nothing.","You see your record and progress as soon as the exam is uploaded."],
+  ["Physical X-rays and CDs at every visit, especially when you change centers.","Every exam in one timeline, on your phone."],
+  ["The Cobb angle is measured with a protractor and varies from measurement to measurement.","AI-assisted estimate with a stored measurement history, for clinician review."],
+  ["Orthopedist, orthotist, physiotherapist: each sees one piece.","One record, with access you set for each professional."],
+  ["Scattered information, plenty of misinformation.","Clear educational content inside the app."]
+ ],
+ r_label:"02 — Who it's for", r_title:"One platform, three nodes",
+ r_sub:"Scoliogram is not a Cobb measuring tool. It is a network that connects patient, healthcare professional and data. Pick a node and see how it connects to the others.",
+ nodes:{
+  patient:{n:"Patient",t:"Patient & family",lead:"The patient owns the record and decides who sees it. Parents and guardians can manage a child's record.",chips:["Personal record","Measurements","Exam history","Access control","Educational content"],
+   links:{pro:"Shares the record and opens secure communication with their clinicians.",data:"Every exam becomes part of their longitudinal history."}},
+  pro:{n:"Healthcare professional",t:"Healthcare professional",lead:"Orthopaedists, orthotists and physiotherapists work from the same picture of the patient, in a clean web environment.",chips:["Patient monitoring","Record management","Study annotation","Secure messages","Exam upload"],
+   links:{patient:"Sees only what the patient has granted and keeps them informed inside the platform.",data:"Reviews and completes measurements and AI estimates."}},
+  data:{n:"Medical data & AI",t:"Medical data & AI",lead:"The foundation of the platform: exams are stored, organized and analysed, with AI support and strict security.",chips:["DICOM storage","AI Cobb estimate","3D visualization","Progression charts","Lab delivery","EU hosting"],
+   links:{patient:"Feeds the history and charts the patient sees.",pro:"Gives the clinician organized data and suggestions to review."}}
+ },
+ conn:"Connected to", edgeL:{patient_pro:"Shared access & messages",pro_data:"Analysis & annotation",data_patient:"History & measurements"},
+ r_note:"AI estimates are always reviewed by the healthcare professional.",
+ a_label:"03 — Analysis", a_title:"From X-ray to AI analysis",
+ a_sub:"Drag the line across the image. On the left is the original X-ray, on the right the same image with AI-assisted analysis. Pick a step to see what gets added.",
+ a_orig:"Original", a_ai:"AI analysis", a_syn:"Synthetic image", a_est:"indicative Cobb angle estimate",
+ a_warn:"Synthetic X-ray for demonstration. The AI analysis is a suggestion for review by the doctor and is not a medical diagnosis.",
+ stages:[["Original X-ray","The image as it arrives from the lab."],["Vertebra detection","Each vertebra identified and numbered."],["Cobb line","The end vertebrae are chosen and the angle measured."],["Curve visualization","The path of the spine relative to the midline."]],
+ c_label:"04 — Progress", c_title:"The value of monitoring over time",
+ c_sub:"One measurement shows a moment. A series of measurements shows the trend. Pick a range and see how the picture changes.",
+ c_from:"From", c_to:"To", c_l1:"Cobb angle", c_l2:"Scoliometer (ATR)",
+ c_cap:"Hypothetical data for demonstration. It does not refer to a real patient.",
+ brace:"Brace started", tipC:"Cobb", tipA:"ATR",
+ st1:"Cobb over the range", st2:"Peak Cobb", st3:"Change",
+ f_label:"05 — What's included", f_title:"The tools long-term monitoring needs",
+ feats:[
+  ["DICOM viewer","Built-in OHIF for CT, MRI, X-ray and ultrasound."],
+  ["Longitudinal record","Every exam from every institution in one timeline. Compare over time, without old CDs."],
+  ["AI-assisted Cobb estimate","A suggested angle that the clinician reviews. Measurement history becomes a chart."],
+  ["Scoliometer & 3D","Scoliometer readings and a three-dimensional view of the spine."],
+  ["Secure messaging","Doctor–patient messages inside the platform, tied to a specific study."],
+  ["Information section","Reliable material on the causes, symptoms and treatment of scoliosis."]
+ ],
+ s_label:"06 — Security", s_title:"Sensitive data. Designed that way from the start.",
+ s_sub:"Radiology data is among the most sensitive health data there is. Protection happens at every layer, not just in the interface.",
+ spec:[
+  ["Hosting","Exclusively in EU regions (Frankfurt). No transatlantic transfers."],
+  ["Encryption","AES-256 at rest and encryption in transit. DICOM is stored in encrypted Orthanc."],
+  ["Study links","Short-lived signed URLs. Sharing a link never grants permanent access."],
+  ["Access","Row-level security (RLS): a doctor sees only what was explicitly granted, even if the code has a bug."],
+  ["Traceability","Immutable audit log for every access, upload, grant and revocation."],
+  ["Rights","GDPR Article 17 (erasure) and Article 20 (portability) right from the app."],
+  ["Architecture","HL7 FHIR compatibility, NIS2 readiness and self-hosting for organizations."]
+ ],
+ st_label:"07 — Our story", st_title:"It started with two patients.",
+ st_p1:"We were both diagnosed with scoliosis very young, and we both went through spinal fusion surgery.",
+ st_p2:"We know what it means to carry X-rays from doctor to doctor, to change centers and lose the history, to spend hours on the phone just to connect the picture of your own progress.",
+ st_p3:"In February 2025, in the Telemedicine course at the University of Thessaly, we turned that experience into a project. Since then Scoliogram has grown with help from doctors, patients and our university.",
+ n_kat:"Katerina Patrinou", n_dim:"Dimitra Prapa", cofounder:"Co-founder",
+ g_label:"08 — Get started", g_title:"Choose how you join Scoliogram",
+ g_pat:"Patient or parent", g_pat_d:"Install the app and start your record. The basic version is free.",
+ g_play:"Google Play", g_apple:"App Store",
+ g_doc:"Doctor", g_doc_d:"Access patient timelines, upload studies and send messages.", g_doc_b:"Register as a doctor",
+ g_lab:"Lab", g_lab_d:"Upload DICOM studies and reports straight into patient records.", g_lab_b:"Register as a lab",
+ ft_priv:"Privacy Policy", ft_terms:"Terms of Use", ft_gdpr:"GDPR",
+ ft_disc:"Scoliogram supports, and does not replace, medical examination and judgment. AI estimates are suggestions for review by the treating healthcare professional."
+}};
+
+let lang='el';
+try{ const s=localStorage.getItem('sg-lang'); if(s&&D[s]) lang=s; }catch(e){}
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const fmtM=m=>new Intl.DateTimeFormat(lang==='el'?'el-GR':'en-GB',{month:'short',year:'numeric'}).format(new Date(2024,m,1));
+
+/* ------- data (hypothetical) ------- */
+const QM=[0,3,6,9,12,15,18,21,24], COBB=[14,17,19,23,27,26,24,23,22], ATR=[5,5,6,8,9,9,8,8,7];
+const VQ=[0,2,4,6,8]; // hero visits -> quarterly index
+let vi=0, ecoSel='patient', stage=3;
+
+/* ------- hero case file ------- */
+function renderCase(){
+  const T=D[lang], n=VQ.length;
+  $('tbtns').innerHTML=VQ.map((q,i)=>`<button class="tp ${i<=vi?'done':''} ${i===vi?'on':''}" role="tab" aria-selected="${i===vi}" data-i="${i}"><i></i><b>${fmtM(QM[q])}</b><small>${T.month} ${QM[q]}</small></button>`).join('');
+  const side=50/n;
+  $('tln').style.left=side+'%';$('tln').style.right=side+'%';
+  $('tfill').style.left=side+'%';$('tfill').style.width=(vi*100/n)+'%';
+  const q=VQ[vi], v=T.visits[vi], L=T.rowL;
+  $('rows').innerHTML=
+   `<div class="r"><span class="rl">${L[0]}</span><div class="rd">${v.x}</div></div>`+
+   `<div class="r"><span class="rl">${L[1]}</span><div class="rd"><b class="num">${COBB[q]}°</b><span class="sub">${T.site}</span><div class="bar"><i style="width:${COBB[q]/50*100}%"></i></div></div></div>`+
+   `<div class="r"><span class="rl">${L[2]}</span><div class="rd"><b class="num">${ATR[q]}°</b><span class="sub">${T.atr}</span></div></div>`+
+   `<div class="r"><span class="rl">${L[3]}</span><div class="rd">${v.e}</div></div>`+
+   `<div class="r"><span class="rl">${L[4]}</span><div class="rd">${v.c}</div></div>`;
+}
+$('track').addEventListener('click',e=>{const b=e.target.closest('.tp');if(!b)return;vi=+b.dataset.i;renderCase();});
+$('track').addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){vi=Math.max(0,Math.min(VQ.length-1,vi+(e.key==='ArrowRight'?1:-1)));renderCase();const b=document.querySelector('.tp.on');b&&b.focus();e.preventDefault();}
+});
+
+/* ------- ecosystem ------- */
+const EDGES={patient_pro:['patient','pro'],pro_data:['pro','data'],data_patient:['data','patient']};
+function renderEco(){
+  const T=D[lang], N=T.nodes, sel=N[ecoSel];
+  ['patient','pro','data'].forEach(k=>{
+    const g=$('n_'+k); g.classList.toggle('on',k===ecoSel);
+    g.querySelector('.nl').textContent=N[k].n; g.setAttribute('aria-label',N[k].n); g.setAttribute('aria-pressed',k===ecoSel);
+  });
+  for(const id in EDGES){
+    const act=EDGES[id].includes(ecoSel);
+    $('e_'+id).classList.toggle('act',act); $('l_'+id).classList.toggle('act',act); $('l_'+id).textContent=T.edgeL[id];
+  }
+  const others=Object.keys(sel.links);
+  $('ecoPanel').innerHTML=
+   `<span class="pk mono">${T.conn.length?'':''}${lang==='el'?'Κόμβος':'Node'}</span><h3>${sel.t}</h3><p class="lead">${sel.lead}</p>`+
+   `<div class="chips">${sel.chips.map((c,i)=>`<span style="animation-delay:${i*50}ms">${c}</span>`).join('')}</div>`+
+   `<div class="conn"><div class="mono" style="color:var(--muted);padding:14px 4px 4px;font-size:11.5px">${T.conn}</div>${others.map(o=>`<button data-k="${o}"><span>→</span><div><b>${N[o].n}</b><small>${sel.links[o]}</small></div></button>`).join('')}</div>`+
+   `<p class="note">${T.r_note}</p>`;
+}
+['patient','pro','data'].forEach(k=>{
+  const g=$('n_'+k);
+  g.addEventListener('click',()=>{ecoSel=k;renderEco();});
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();ecoSel=k;renderEco();}});
+});
+$('ecoPanel').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;ecoSel=b.dataset.k;renderEco();});
+
+/* ------- synthetic X-ray + AI overlay ------- */
+const XN=17,XCX=200,XTOP=72,XH=380,XA=19;
+function vp(i){const t=(i+.5)/XN;const sl=XA*2*Math.PI*Math.cos(2*Math.PI*t)/XH;return{x:XCX+XA*Math.sin(2*Math.PI*t),y:XTOP+XH*t,th:Math.atan(sl)*180/Math.PI,w:22+14*i/(XN-1),h:XH/XN*.78};}
+const LV=['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12','L1','L2','L3','L4','L5'];
+const IA=1, IB=7;
+function baseSvg(id){
+  let s=`<defs><radialGradient id="bg${id}" cx="50%" cy="46%" r="70%"><stop offset="0" stop-color="#1d4553"/><stop offset=".6" stop-color="#0f2b37"/><stop offset="1" stop-color="#07151c"/></radialGradient>
+  <filter id="bl${id}"><feGaussianBlur stdDeviation=".9"/></filter>
+  <filter id="gr${id}"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter></defs>
+  <rect width="400" height="520" fill="url(#bg${id})"/>`;
+  s+=`<g filter="url(#bl${id})">`;
+  // shoulders / clavicles
+  s+=`<path d="M70 70Q135 52 190 62M330 70Q265 52 210 62" stroke="rgba(215,235,240,.22)" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+  // ribs
+  for(let i=1;i<=10;i++){const p=vp(i);for(const sd of[-1,1]){
+    const x0=p.x+sd*p.w/2, y0=p.y-2, ex=p.x+sd*(78+i*3.6-(i>7?(i-7)*6:0)), ey=y0+48+i*3.5;
+    s+=`<path d="M${x0.toFixed(1)} ${y0.toFixed(1)}C${(x0+sd*34).toFixed(1)} ${(y0-14).toFixed(1)} ${(ex+sd*6).toFixed(1)} ${(y0+6).toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}" stroke="rgba(215,235,240,${(.26-i*.008).toFixed(3)})" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;}}
+  // pelvis
+  s+=`<path d="M92 520C86 470 130 448 200 458C270 448 314 470 308 520" fill="rgba(215,235,240,.07)" stroke="rgba(215,235,240,.3)" stroke-width="9" stroke-linecap="round"/>`;
+  s+=`<path d="M172 462Q200 500 228 462" fill="rgba(215,235,240,.22)" stroke="none"/>`;
+  // vertebrae
+  for(let i=0;i<XN;i++){const p=vp(i);
+    s+=`<g transform="translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) rotate(${(-p.th).toFixed(2)})"><rect x="${(-p.w/2).toFixed(1)}" y="${(-p.h/2).toFixed(1)}" width="${p.w.toFixed(1)}" height="${p.h.toFixed(1)}" rx="5" fill="rgba(228,242,246,.62)" stroke="rgba(255,255,255,.28)" stroke-width="1"/><circle r="3" fill="rgba(255,255,255,.35)"/></g>`;}
+  s+=`</g><rect width="400" height="520" filter="url(#gr${id})" opacity=".13"/>`;
+  return s;
+}
+function aiLayers(){
+  let L1='',L2='',L3='';
+  for(let i=0;i<XN;i++){const p=vp(i);
+    L1+=`<g transform="translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) rotate(${(-p.th).toFixed(2)})"><rect x="${(-p.w/2-3).toFixed(1)}" y="${(-p.h/2-2).toFixed(1)}" width="${(p.w+6).toFixed(1)}" height="${(p.h+4).toFixed(1)}" rx="6" fill="rgba(31,163,168,.14)" stroke="#34C3C8" stroke-width="1.3"/></g>`;
+    L1+=`<text x="${(p.x+p.w/2+11).toFixed(1)}" y="${(p.y+3.5).toFixed(1)}" font-size="9.5" font-weight="600" fill="#7FE0E3" font-family="Inter,sans-serif">${LV[i]}</text>`;}
+  const a=vp(IA), b=vp(IB), ang=Math.abs(a.th)+Math.abs(b.th);
+  function end(p,sign){const r=p.th*Math.PI/180, tx=Math.sin(r), ty=Math.cos(r); // tangent (dx,dy)/norm
+    const cx=p.x+sign*tx*p.h/2, cy=p.y+sign*ty*p.h/2, ex=Math.cos(r), ey=-Math.sin(r); // endplate dir
+    return [cx-ex*95,cy-ey*95,cx+ex*95,cy+ey*95,cx,cy];}
+  const A=end(a,-1), B=end(b,1);
+  L2+=`<line x1="${A[0].toFixed(1)}" y1="${A[1].toFixed(1)}" x2="${A[2].toFixed(1)}" y2="${A[3].toFixed(1)}" stroke="#fff" stroke-width="2"/>`;
+  L2+=`<line x1="${B[0].toFixed(1)}" y1="${B[1].toFixed(1)}" x2="${B[2].toFixed(1)}" y2="${B[3].toFixed(1)}" stroke="#fff" stroke-width="2"/>`;
+  // perpendiculars from the left ends, dashed
+  const pa=[A[0]-Math.sin(a.th*Math.PI/180)*0,A[1]],
+        perp=(P,dirSign)=>{const r=P.th*Math.PI/180;return[Math.sin(r),Math.cos(r)];};
+  L2+=`<path d="M${A[0].toFixed(1)} ${A[1].toFixed(1)}L${(A[0]-Math.sin(a.th*Math.PI/180)*-60).toFixed(1)} ${(A[1]+Math.cos(a.th*Math.PI/180)*60).toFixed(1)}M${B[0].toFixed(1)} ${B[1].toFixed(1)}L${(B[0]-Math.sin(b.th*Math.PI/180)*60).toFixed(1)} ${(B[1]-Math.cos(b.th*Math.PI/180)*60).toFixed(1)}" stroke="#fff" stroke-width="1.2" stroke-dasharray="4 4" fill="none" opacity=".8"/>`;
+  const my=(a.y+b.y)/2;
+  L2+=`<g transform="translate(40 ${my.toFixed(1)})"><rect x="0" y="-15" width="86" height="30" rx="15" fill="#fff"/><text x="43" y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#0B2E4B" font-family="Manrope,Inter,sans-serif">Cobb ≈ ${Math.round(ang)}°</text></g>`;
+  // midline + curve
+  let d='';for(let k=0;k<=60;k++){const t=k/60;const x=XCX+XA*Math.sin(2*Math.PI*t),y=XTOP+XH*(.5/XN)+ (XH*(1-1/XN))*t;d+=(k?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}
+  L3+=`<line x1="${XCX}" y1="${XTOP-14}" x2="${XCX}" y2="${XTOP+XH+8}" stroke="#fff" stroke-width="1" stroke-dasharray="3 5" opacity=".6"/>`;
+  L3+=`<path d="${d}" stroke="#1FA3A8" stroke-width="9" fill="none" opacity=".25" stroke-linecap="round"/><path d="${d}" stroke="#7FE0E3" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  const ap=vp(4), bp=vp(12);
+  L3+=`<circle cx="${(XCX+XA).toFixed(1)}" cy="${(XTOP+XH*(4.5/XN)).toFixed(1)}" r="5" fill="#fff" stroke="#1FA3A8" stroke-width="2"/><circle cx="${(XCX-XA).toFixed(1)}" cy="${(XTOP+XH*(12.5/XN)).toFixed(1)}" r="5" fill="#fff" stroke="#1FA3A8" stroke-width="2"/>`;
+  return{svg:`<g class="L1">${L1}</g><g class="L2">${L2}</g><g class="L3">${L3}</g>`,ang:Math.round(ang)};
+}
+const AI=aiLayers();
+$('xrBase').innerHTML=baseSvg('a');
+$('xrAi').innerHTML=baseSvg('b')+`<rect width="400" height="520" fill="rgba(31,163,168,.07)"/>`+AI.svg;
+function setX(p){p=Math.max(0,Math.min(100,p));$('xrImg').style.setProperty('--x',p+'%');$('xrRange').value=p;}
+$('xrRange').addEventListener('input',e=>setX(+e.target.value));
+(function(){
+  const el=$('xrImg');let drag=false;
+  const mv=e=>{const r=el.getBoundingClientRect();setX((e.clientX-r.left)/r.width*100);};
+  el.addEventListener('pointerdown',e=>{drag=true;el.setPointerCapture(e.pointerId);mv(e);stopAuto();});
+  el.addEventListener('pointermove',e=>{if(drag)mv(e);});
+  el.addEventListener('pointerup',()=>drag=false);el.addEventListener('pointercancel',()=>drag=false);
+})();
+function setStage(s){stage=s;$('xr').dataset.s=s;$('cobbVal').textContent=s>=2?'≈ '+AI.ang+'°':'—';
+  document.querySelectorAll('#stg button').forEach(b=>b.classList.toggle('on',+b.dataset.s===s));}
+function renderStages(){
+  $('stg').innerHTML=D[lang].stages.map((s,i)=>`<button data-s="${i}" class="${i===stage?'on':''}"><span class="n">0${i+1}</span><span><b>${s[0]}</b><small>${s[1]}</small></span></button>`).join('');
+  setStage(stage);
+}
+$('stg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;stopAuto();setStage(+b.dataset.s);});
+let auto=null;function stopAuto(){if(auto){clearInterval(auto);auto=null;}}
+
+/* ------- progress chart ------- */
+let cF=0,cT=8,hover=null;
+function fillSelects(){
+  const f=$('cFrom'),t=$('cTo');
+  f.innerHTML=QM.slice(0,8).map((m,i)=>`<option value="${i}">${fmtM(m)}</option>`).join('');
+  t.innerHTML=QM.slice(1).map((m,i)=>`<option value="${i+1}">${fmtM(m)}</option>`).join('');
+  f.value=cF;t.value=cT;
+}
+$('cFrom').addEventListener('change',e=>{cF=+e.target.value;if(cT<=cF){cT=cF+1;}fillSelects();hover=null;drawChart();});
+$('cTo').addEventListener('change',e=>{cT=+e.target.value;if(cF>=cT){cF=cT-1;}fillSelects();hover=null;drawChart();});
+function drawChart(){
+  const T=D[lang],W=720,H=330,L=48,R=48,Tp=24,B=46,pw=W-L-R,ph=H-Tp-B;
+  const idx=[];for(let i=cF;i<=cT;i++)idx.push(i);
+  const X=k=>L+k/(idx.length-1)*pw, YC=v=>Tp+ph-v/40*ph, YA=v=>Tp+ph-v/16*ph;
+  let s='';
+  for(let j=0;j<=4;j++){const y=Tp+ph*(1-j/4);
+    s+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="rgba(11,46,75,${j?'.08':'.25'})"/>`+
+       `<text x="${L-10}" y="${y+4}" text-anchor="end" font-size="11.5" fill="#52697A">${j*10}°</text>`+
+       `<text x="${W-R+10}" y="${y+4}" font-size="11.5" fill="#1B8E94">${j*4}°</text>`;}
+  const bk=idx.indexOf(4);
+  if(bk>=0){const x=X(bk);s+=`<line x1="${x}" x2="${x}" y1="${Tp}" y2="${Tp+ph}" stroke="#17808F" stroke-dasharray="4 5" opacity=".7"/><text x="${x+6}" y="${Tp+12}" font-size="11.5" font-weight="600" fill="#17808F">${T.brace}</text>`;}
+  const pc=idx.map((q,k)=>X(k).toFixed(1)+','+YC(COBB[q]).toFixed(1)).join(' ');
+  const pa=idx.map((q,k)=>X(k).toFixed(1)+','+YA(ATR[q]).toFixed(1)).join(' ');
+  const area=`M${X(0)},${Tp+ph} L${pc.split(' ').join(' L')} L${X(idx.length-1)},${Tp+ph}Z`;
+  s+=`<path d="${area}" fill="rgba(11,46,75,.05)"/>`;
+  s+=`<polyline points="${pa}" fill="none" stroke="#1FA3A8" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s+=`<polyline points="${pc}" fill="none" stroke="#0B2E4B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  idx.forEach((q,k)=>{
+    s+=`<circle cx="${X(k)}" cy="${YA(ATR[q])}" r="3.5" fill="#fff" stroke="#1FA3A8" stroke-width="2"/><circle cx="${X(k)}" cy="${YC(COBB[q])}" r="${hover===k?6:4.5}" fill="#fff" stroke="#0B2E4B" stroke-width="2.4"/>`;
+    s+=`<text x="${X(k)}" y="${H-18}" text-anchor="middle" font-size="11.5" fill="${hover===k?'#0B2E4B':'#52697A'}" font-weight="${hover===k?600:400}">${fmtM(QM[q])}</text>`;
+  });
+  if(hover!==null){
+    const q=idx[hover],x=X(hover),w=132,left=x>W*.62,bx=left?x-w-14:x+14,by=Tp+6;
+    s+=`<line x1="${x}" x2="${x}" y1="${Tp}" y2="${Tp+ph}" stroke="#0B2E4B" opacity=".25"/>`+
+      `<g><rect x="${bx}" y="${by}" width="${w}" height="64" rx="8" fill="#fff" stroke="rgba(11,46,75,.18)"/>`+
+      `<text x="${bx+12}" y="${by+20}" font-size="12" font-weight="700" fill="#0B2E4B">${fmtM(QM[q])}</text>`+
+      `<text x="${bx+12}" y="${by+38}" font-size="12" fill="#0B2E4B">${T.tipC}: <tspan font-weight="700">${COBB[q]}°</tspan></text>`+
+      `<text x="${bx+12}" y="${by+55}" font-size="12" fill="#1B8E94">${T.tipA}: <tspan font-weight="700">${ATR[q]}°</tspan></text></g>`;
+  }
+  s+=`<rect id="chHit" x="${L-10}" y="${Tp}" width="${pw+20}" height="${ph+30}" fill="transparent"/>`;
+  $('chart').innerHTML=s;
+  const hit=$('chHit');
+  hit.addEventListener('pointermove',e=>{const r=$('chart').getBoundingClientRect();const px=(e.clientX-r.left)/r.width*W;let k=Math.round((px-L)/pw*(idx.length-1));k=Math.max(0,Math.min(idx.length-1,k));if(k!==hover){hover=k;drawChart();}});
+  hit.addEventListener('pointerleave',()=>{if(hover!==null){hover=null;drawChart();}});
+  const a=COBB[idx[0]],b=COBB[idx[idx.length-1]],mx=Math.max(...idx.map(q=>COBB[q])),d=b-a;
+  $('stats').innerHTML=`<div><small>${T.st1}</small><b>${a}° → ${b}°</b></div><div><small>${T.st2}</small><b>${mx}°</b></div><div><small>${T.st3}</small><b class="teal">${d>0?'+':''}${d}°</b></div>`;
+}
+
+/* ------- i18n render ------- */
+function render(){
+  const T=D[lang];
+  document.documentElement.lang=lang; document.title=T.title;
+  document.querySelectorAll('[data-t]').forEach(el=>{ if(typeof T[el.dataset.t]==='string') el.innerHTML=T[el.dataset.t]; });
+  $('img1').alt=T.n_kat; $('img2').alt=T.n_dim;
+  $('lang').textContent = lang==='el'?'EN':'EL';
+  $('cmp').innerHTML = `<div class="row hd mono"><span>${T.p_h1}</span><span>${T.p_h2}</span></div>` + T.cmp.map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');
+  $('idx').innerHTML = T.feats.map((f,i)=>`<div class="item"><span class="n">0${i+1}</span><h4>${f[0]}</h4><p>${f[1]}</p></div>`).join('');
+  $('spec').innerHTML = T.spec.map(s=>`<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('');
+  renderCase(); renderEco(); renderStages(); fillSelects(); drawChart();
+}
+$('lang').addEventListener('click',()=>{lang=lang==='el'?'en':'el';try{localStorage.setItem('sg-lang',lang)}catch(e){}render();});
+$('yr').textContent=new Date().getFullYear();
+
+/* ------- subtle dot field (hero + security) ------- */
+function dotField(sec){
+  const light=sec.dataset.field==='light', off=+(sec.dataset.offset||0), GAP=30, R=150;
+  const cv=document.createElement('canvas'); cv.className='df'; cv.style.top=off+'px'; sec.insertBefore(cv,sec.firstChild);
+  const ctx=cv.getContext('2d'); let w=0,h=0,mx=-999,my=-999,sx=-999,sy=-999,vis=false,raf=0;
+  function size(){const r=sec.getBoundingClientRect();const dpr=Math.min(devicePixelRatio||1,2);w=r.width;h=Math.max(0,r.height-off);cv.style.height=h+'px';cv.width=w*dpr;cv.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(let y=GAP/2;y<h;y+=GAP)for(let x=GAP/2;x<w;x+=GAP){
+      const dx=x-sx,dy=y-sy,d=Math.hypot(dx,dy);
+      let k=d<R?1-d/R:0;k*=k;const p=d>0?k*7/d:0;
+      ctx.fillStyle=light?`rgba(23,128,143,${.12+k*.55})`:`rgba(143,211,214,${.13+k*.65})`;
+      ctx.beginPath();ctx.arc(x+dx*p,y+dy*p,1.1+k*2.2,0,6.2832);ctx.fill();
+    }
+  }
+  function tick(){sx+=(mx-sx)*.16;sy+=(my-sy)*.16;draw();raf=(vis&&Math.hypot(mx-sx,my-sy)>.4)?requestAnimationFrame(tick):0;}
+  new ResizeObserver(size).observe(sec); size();
+  new IntersectionObserver(es=>{vis=es[0].isIntersecting;}).observe(sec);
+  if(reduce) return;
+  addEventListener('pointermove',e=>{
+    if(!vis||e.pointerType==='touch')return;
+    const r=sec.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top-off;
+    if(x<0||x>w||y<-R||y>h+R){ if(mx!==-999){mx=my=sx=sy=-999;draw();} return; }
+    mx=x;my=y; if(sx<-900){sx=mx;sy=my;} if(!raf)raf=requestAnimationFrame(tick);
+  },{passive:true});
+}
+
+render();
+document.querySelectorAll('[data-field]').forEach(dotField);
+
+/* ------- reveal, parallax, progress ------- */
+(function(){
+  if(!reduce && 'IntersectionObserver' in window){
+    const sel='.hero .wrap>div,.sec>div:first-child,h2,.subt,.cmp .row,.eco-box,.panel,.xr>div,.chart-box,.cap2,.idx .item,.spec>div,.team figure,.story .txt,.start .col';
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll(sel).forEach((el,i)=>{el.classList.add('rv');const sib=[...el.parentElement.children].indexOf(el);el.style.transitionDelay=Math.min(sib,5)*70+'ms';io.observe(el);});
+  }
+  const pars=[...document.querySelectorAll('[data-par]')],bar=$('prog');
+  let tk=false;
+  function upd(){
+    tk=false;
+    const max=document.documentElement.scrollHeight-innerHeight;bar.style.width=(max>0?scrollY/max*100:0)+'%';
+    if(reduce||innerWidth<700)return;
+    pars.forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom<-200||r.top>innerHeight+200)return;const off=(r.top+r.height/2-innerHeight/2)*-parseFloat(el.dataset.par);el.style.transform=`translate3d(0,${off.toFixed(1)}px,0)`;});
+  }
+  addEventListener('scroll',()=>{if(!tk){tk=true;requestAnimationFrame(upd);}},{passive:true});
+  addEventListener('resize',upd);upd();
+  // intro play of the AI steps once when the analysis section is reached
+  if(!reduce){
+    stage=0;setStage(0);
+    const io2=new IntersectionObserver(es=>{if(es[0].isIntersecting){io2.disconnect();let s=0;auto=setInterval(()=>{s++;setStage(s);if(s>=3)stopAuto();},800);}},{threshold:.45});
+    io2.observe($('xr'));
+  }
+})();
+</script>
+</body>
+</html>
